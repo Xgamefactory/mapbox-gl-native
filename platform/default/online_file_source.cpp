@@ -194,8 +194,7 @@ private:
         }
 
         void insert(OnlineFileRequest* request) {
-            std::size_t priority = request->resource.priority;
-            assert(priority == 0 || priority == 1);
+            std::size_t priority = request->resource.isLowPriority;
             auto it = prioritizedPendingRequestsList[priority].insert(prioritizedPendingRequestsList[priority].end(), request);
             prioritizedPendingRequestsMap[priority].emplace(request, std::move(it));
             assertSizes();

@@ -375,7 +375,7 @@ void OfflineDownload::ensureResource(const Resource& resource_,
     // TODO: Make sure the incoming `resources` are all low priority or refactor somehow
     Resource resource = resource_;
     resource.setLowPriority();
-    assert(resource.priority == 1);
+    assert(resource.isLowPriority);
 
     auto workRequestsIt = requests.insert(requests.begin(), nullptr);
     *workRequestsIt = util::RunLoop::Get()->invokeCancellable([=]() {
