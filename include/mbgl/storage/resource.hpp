@@ -49,6 +49,7 @@ public:
         : kind(kind_),
           loadingMethod(loadingMethod_),
           url(std::move(url_)),
+          priority(0),
           tileData(std::move(tileData_)) {
     }
 
@@ -69,10 +70,11 @@ public:
     static Resource spriteImage(const std::string& base, float pixelRatio);
     static Resource spriteJSON(const std::string& base, float pixelRatio);
     static Resource image(const std::string& url);
-    
+
     Kind kind;
     LoadingMethod loadingMethod;
     std::string url;
+    int priority;
 
     // Includes auxiliary data if this is a tile request.
     optional<TileData> tileData;
