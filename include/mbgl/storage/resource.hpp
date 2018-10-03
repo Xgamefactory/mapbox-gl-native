@@ -53,6 +53,10 @@ public:
           tileData(std::move(tileData_)) {
     }
 
+    void setLowPriority() {
+      priority = 1;
+    }
+
     bool hasLoadingMethod(LoadingMethod method);
 
     static Resource style(const std::string& url);

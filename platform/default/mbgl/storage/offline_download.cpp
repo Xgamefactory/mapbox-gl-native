@@ -353,6 +353,7 @@ void OfflineDownload::deactivateDownload() {
 }
 
 void OfflineDownload::queueResource(Resource resource) {
+    resource.setLowPriority();
     status.requiredResourceCount++;
     resourcesRemaining.push_front(std::move(resource));
 }
@@ -360,14 +361,22 @@ void OfflineDownload::queueResource(Resource resource) {
 void OfflineDownload::queueTiles(SourceType type, uint16_t tileSize, const Tileset& tileset) {
     tileCover(definition, type, tileSize, tileset.zoomRange, [&](const auto& tile) {
         status.requiredResourceCount++;
-        resourcesRemaining.push_back(Resource::tile(
+        auto r = Resource::tile(
             tileset.tiles[0], definition.match([](auto& def) { return def.pixelRatio; }), tile.x,
-            tile.y, tile.z, tileset.scheme));
+            tile.y, tile.z, tileset.scheme);
+        r.setLowPriority();
+        resourcesRemaining.push_back(r);
     });
 }
 
-void OfflineDownload::ensureResource(const Resource& resource,
+void OfflineDownload::ensureResource(const Resource& resource_,
                                      std::function<void(Response)> callback) {
+
+    // TODO: Make sure the incoming `resources` are all low priority or refactor somehow
+    Resource resource = resource_;
+    resource.setLowPriority();
+    assert(resource.priority == 1);
+
     auto workRequestsIt = requests.insert(requests.begin(), nullptr);
     *workRequestsIt = util::RunLoop::Get()->invokeCancellable([=]() {
         requests.erase(workRequestsIt);
